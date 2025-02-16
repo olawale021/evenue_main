@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+  <title th:text="${event.eventName} + ' - Event Details'">Event Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50">
+<!-- Header Fragment -->
+<div th:insert="~{header :: headerFragment}"></div>
+<!-- Breadcrumbs -->
+<nav class="flex mb-4" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-1 md:space-x-3">
+    <li>
+      <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+    </li>
+    <li>
+      <span class="text-gray-400" aria-hidden="true">/</span>
+    </li>
+    <li>
+      <a href="/events/browse" class="text-gray-700 hover:text-blue-600">Browse Events</a>
+    </li>
+    <li>
+      <span class="text-gray-400" aria-hidden="true">/</span>
+    </li>
+    <li>
+      <span class="text-gray-500" aria-current="page" th:text="${event.eventName}">Event Name</span>
+    </li>
+  </ol>
+</nav>
+
+<div class="container mx-auto p-4 md:p-8 max-w-7xl">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Main Content -->
+    <div class="lg:w-2/3">
+      <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- Event Image -->
+        <div class="relative h-72 md:h-96 bg-gray-300">
+          <img th:src="${event.eventImage}" alt="Event Image" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent flex items-end">
+            <h1 class="text-white text-4xl md:text-5xl font-bold p-6 drop-shadow-lg" th:text="${event.eventName}">Event Name</h1>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10">
+          <!-- Event Details -->
+          <input type="hidden" name="eventId" th:value="${event.id}" />
+          <input type="hidden" name="eventLocation" th:value="${event.location}" />
+          <input type="hidden" name="eventCategoryId" th:value="${event.eventCategory != null ? event.eventCategory.id : null}" />
+
+          <div class="mb-10 grid grid-cols-1 md:grid-cols-2 gap-6 text-lg">
+            <div>
+              <p class="flex items-center text-gray-700">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span th:text="${#temporals.format(event.eventDate, 'MMMM d, yyyy')}">Event Date</span>
+              </p>
+              <p class="flex items-center text-gray-700 mt-2">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span th:text="${event.startTime}">Event Time</span>
+              </p>
+            </div>
+            <div>
+              <p class="flex items-center text-gray-700">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span th:text="${event.location}">Event Location</span>
+              </p>
+              <p class="flex items-center text-gray-700 mt-2">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                </svg>
+                <span th:text="${event.eventCategory.name}">Event Category</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Event Description -->
+          <div class="mb-10">
+            <h2 class="text-3xl font-bold mb-4">About This Event</h2>
+            <p class="text-gray-700 leading-relaxed" th:text="${event.description}">Event Description</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Ticket Section -->
+    <div class="lg:w-1/3">
+      <div class="sticky top-4">
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+          <div class="p-6">
+            <!-- Ticket Information -->
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+              <h2 class="text-2xl font-bold mb-2 text-blue-800">Ticket Information</h2>
+              <p class="text-xl font-semibold text-blue-900">
+                <span th:if="${minPrice == maxPrice}" th:text="'£' + ${minPrice}">Ticket Price</span>
+                <span th:if="${minPrice != maxPrice}" th:text="'£' + ${minPrice} + ' - £' + ${maxPrice}">Ticket Price Range</span>
+              </p>
+            </div>
+
+            <!-- Ticket Types Section -->
+            <div>
+              <h3 class="text-2xl font-bold mb-4">Available Tickets</h3>
+
+              <div th:if="${ticketTypes.size() > 0}">
+                <div th:each="ticketType, iterStat : ${ticketTypes}" class="border-b border-gray-200 py-4 last:border-b-0">
+                  <div class="flex flex-col">
+                    <!-- Ticket Type Name and Description -->
+                    <div class="mb-2">
+                      <p class="text-lg font-bold text-gray-800" th:text="${ticketType.typeName}">Ticket Type</p>
+                      <p class="text-sm text-gray-600" th:text="${ticketType.description}">Ticket Type Description</p>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <!-- Ticket Price -->
+                      <div class="text-xl font-semibold text-blue-600" th:text="'£' + ${ticketType.price}">£0.00</div>
+
+                      <!-- Quantity Selector -->
+                      <div th:if="${ticketType.remainingQuantity > 0}" class="w-1/2">
+                        <select
+                                th:id="'qty_' + ${ticketType.ticketTypeId}"
+                                class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                aria-label="Select quantity">
+                          <option value="0">0</option>
+                          <option th:each="i : ${#numbers.sequence(1, ticketType.remainingQuantity)}"
+                                  th:value="${i}"
+                                  th:text="${i}">
+                          </option>
+                        </select>
+                      </div>
+
+                      <!-- Sold Out Message -->
+                      <div th:if="${ticketType.remainingQuantity == 0}" class="text-red-600 font-bold">Sold Out</div>
+                    </div>
+
+                    <!-- Book Now Button -->
+                    <div class="mt-6">
+                      <a th:id="'buyLink_' + ${ticketType.ticketTypeId}"
+                         th:href="@{'/tickets/buy/' + ${ticketType.ticketTypeId} + '?quantity=0'}"
+                         class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl font-semibold text-lg disabled:opacity-50"
+                         th:onclick="'return validateQuantity(\'' + ${ticketType.ticketTypeId} + '\');'">
+                        Get Tickets
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- No tickets available message -->
+              <div th:if="${ticketTypes.size() == 0}" class="text-center py-6">
+                <p class="text-gray-600 text-lg">No tickets available for this event.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Events Section -->
+<section>
+  <div th:insert="~{featured-events :: featured-events}"></div>
+</section>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+<script>
+  let startTime = Date.now(); // Capture the start time when the page loads
+
+  window.addEventListener('beforeunload', function (event) {
+    let endTime = Date.now();
+    let timeSpent = (endTime - startTime) / 1000; // Time spent in seconds
+// Assuming you have a hidden input for event ID
+    const eventId = document.querySelector('input[name="eventId"]').value;
+
+// Capture other necessary information
+    const eventLocation = document.querySelector('input[name="eventLocation"]').value; // Assuming you have an input for event location
+    const eventCategoryId = document.querySelector('input[name="eventCategoryId"]').value; // Assuming you have an input for event category ID
+
+    let interactionType = 'view';
+
+    // Get CSRF token and header from the meta tags
+    // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+
+    // Log the values for debugging
+    console.log('beforeunload event triggered');
+    console.log('Event ID:', eventId);
+    console.log('Event Location:', eventLocation);
+    console.log('Event Category ID:', eventCategoryId);
+    console.log('Time Spent:', timeSpent, 'seconds');
+    console.log('Interaction Type:', interactionType);
+
+    // Prepare payload with CSRF token, interaction type, and event category ID
+    const payload = {
+      eventId: eventId,
+      eventCategoryId: eventCategoryId, // Add event category ID to payload
+      timeSpent: timeSpent,
+      eventLocation: eventLocation,
+      interactionType: interactionType, // Set interaction type as 'view'
+      // _csrf: csrfToken // Add CSRF token to the payload
+    };
+
+    // Send the time spent and CSRF token to the server with application/json content-type
+    navigator.sendBeacon('/behaviour/save-behaviour', JSON.stringify(payload));
+  });
+
+
+
+
+
+  const selectedQuantities = {};
+
+  function updateQuantity(ticketTypeId, quantity) {
+    console.log('Updating quantity for ticket type:', ticketTypeId, 'to', quantity);
+    selectedQuantities[ticketTypeId] = parseInt(quantity);
+    const buyLink = document.getElementById('buyLink_' + ticketTypeId);
+    if (buyLink) {
+      buyLink.href = '/tickets/buy/' + ticketTypeId + '?quantity=' + quantity;
+      buyLink.classList.toggle('disabled', quantity === '0');
+      console.log('Updated buy link:', buyLink.href);
+    }
+  }
+
+  function validateQuantity(ticketTypeId) {
+    const quantity = selectedQuantities[ticketTypeId] || 0;
+    console.log('Validating quantity for ticket type:', ticketTypeId, 'Quantity:', quantity);
+    if (quantity > 0) {
+      return true;
+    } else {
+      alert("Please select a valid quantity.");
+      return false;
+    }
+  }
+
+  // Initialize quantity selectors
+  document.addEventListener('DOMContentLoaded', function() {
+    const quantitySelectors = document.querySelectorAll('select[id^="qty_"]');
+    quantitySelectors.forEach(selector => {
+      const ticketTypeId = selector.id.split('_')[1];
+      selector.addEventListener('change', function() {
+        updateQuantity(ticketTypeId, this.value);
+      });
+      // Initialize with current value
+      updateQuantity(ticketTypeId, selector.value);
+    });
+  });
+
+
+
+</script>
+
+<script>
+  console.log('Event Object:', [[${event}]]);
+</script>
+
+
+</body>
+</html>

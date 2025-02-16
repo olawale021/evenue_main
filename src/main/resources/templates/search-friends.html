@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Users</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+<!-- Header -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Search Results</h1>
+
+  <div th:if="${searchResults.size() > 0}">
+    <ul>
+      <li th:each="user : ${searchResults}" class="mb-4 bg-white p-4 shadow-md rounded-lg">
+        <div class="flex justify-between">
+          <div>
+            <h2 class="text-xl font-bold" th:text="${user.userName}">Username</h2>
+            <p class="text-gray-600" th:text="'Email: ' + ${user.email}">Email</p>
+          </div>
+          <form th:action="@{/friends/add/{friendId}(friendId=${user.id})}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Add Friend</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div th:if="${searchResults.size() == 0}">
+    <p class="text-gray-600">No users found with that username.</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<div th:insert="footer :: footer"></div>
+
+</body>
+</html>

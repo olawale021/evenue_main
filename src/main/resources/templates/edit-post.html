@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Post - Evenue</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row">
+    <!-- Sidebar -->
+    <div class="w-full md:w-1/4 mb-8 md:mb-0">
+      <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+        <nav>
+          <ul class="space-y-2">
+            <li><a href="/users/attendee/dashboard" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">Overview</a></li>
+            <li><a href="/users/tickets" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Tickets</a></li>
+            <li><a href="/users/upcoming-events" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">Upcoming Events</a></li>
+            <li><a href="/posts/my-posts" class="block px-4 py-2 rounded-md text-indigo-600 bg-indigo-50 font-medium">My Posts</a></li>
+            <li><a href="/users/profile/edit" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Profile</a></li>
+            <li><a th:href="@{/users/logout}" class="block px-4 py-2 rounded-md text-red-600 hover:bg-red-50 transition duration-150 ease-in-out">Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full md:w-3/4 md:pl-8">
+      <div class="bg-white shadow rounded-lg p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Post</h1>
+
+        <form th:action="@{/posts/{id}/edit(id=${post.id})}" method="post" enctype="multipart/form-data">
+          <div class="mb-6">
+            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+            <input type="text" id="title" name="title" th:value="${post.title}" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+
+          <div class="mb-6">
+            <label for="content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+            <textarea id="content" name="content" rows="6" required
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                      th:text="${post.content}"></textarea>
+          </div>
+
+          <div class="mb-6">
+            <label for="eventId" class="block text-sm font-medium text-gray-700 mb-2">Associated Event</label>
+            <select id="eventId" name="eventId" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Select an event</option>
+              <option th:each="event : ${events}"
+                      th:value="${event.id}"
+                      th:text="${event.eventName}"
+                      th:selected="${event.id == post.event.id}"></option>
+            </select>
+          </div>
+
+          <div class="mb-6">
+            <label for="newImages" class="block text-sm font-medium text-gray-700 mb-2">Add New Images</label>
+            <input type="file" id="newImages" name="newImages" multiple
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+
+          <div class="flex justify-between">
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Save Changes
+            </button>
+            <a th:href="@{/posts/my-posts}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Cancel
+            </a>
+          </div>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+</body>
+</html>

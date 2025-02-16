@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Evenue</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="w-full md:w-1/4 mb-8 md:mb-0">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+                <nav>
+                    <ul class="space-y-2">
+                        <li><a href="/users/attendee/dashboard" class="block px-4 py-2 rounded-md text-indigo-600 bg-indigo-50 font-medium">Overview</a></li>
+                        <li><a href="/users/tickets" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Tickets</a></li>
+                        <li><a href="/users/upcoming-events" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">Upcoming Events</a></li>
+                        <li><a href="/posts/my-posts" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Posts</a></li>
+                        <li><a href="/users/profile/edit" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Profile</a></li>
+                        <li><a th:href="@{/users/logout}" class="block px-4 py-2 rounded-md text-red-600 hover:bg-red-50 transition duration-150 ease-in-out">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="w-full md:w-3/4 md:pl-8">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome to Your Dashboard</h1>
+                <p class="text-lg text-gray-600 mb-6" th:text="'Hello, ' + ${user.email} + '!'"></p>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-indigo-100 p-4 rounded-lg">
+                        <h3 class="text-xl font-semibold text-indigo-800">Upcoming Events</h3>
+                        <p class="text-3xl font-bold text-indigo-600">5</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg">
+                        <h3 class="text-xl font-semibold text-green-800">Tickets Purchased</h3>
+                        <p class="text-3xl font-bold text-green-600">12</p>
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded-lg">
+                        <h3 class="text-xl font-semibold text-purple-800">Events Attended</h3>
+                        <p class="text-3xl font-bold text-purple-600">8</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activity with Create Post Button -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold text-gray-800">Recent Activity</h2>
+                        <!-- Button to trigger modal -->
+                        <button id="createPostBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Create New Post
+                        </button>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-800">Created a new post about <span class="font-semibold">Summer Music Festival</span></p>
+                            <p class="text-sm text-gray-500">1 day ago</p>
+                        </li>
+                        <li class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-800">Purchased 2 tickets for <span class="font-semibold">Summer Music Festival</span></p>
+                            <p class="text-sm text-gray-500">2 days ago</p>
+                        </li>
+                        <li class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-800">Attended <span class="font-semibold">Tech Conference 2024</span></p>
+                            <p class="text-sm text-gray-500">1 week ago</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Create Post -->
+<div id="createPostModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+            <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                    Create a New Post
+                </h3>
+                <form th:action="@{/posts/create}" method="post" enctype="multipart/form-data">
+
+                    <!-- Title Input Field -->
+                    <div class="mt-2">
+                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" id="title" name="title" required
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+
+                    <!-- Content Textarea -->
+                    <div class="mt-2">
+                        <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                        <textarea id="content" name="content" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="eventId" class="form-label">Select Event</label>
+                        <select id="eventId" name="eventId" class="form-select form-control" required>
+                            <option value="" disabled selected>Choose an event</option>
+                            <!-- Iterate over allEvents (full list) for the dropdown -->
+                            <option th:each="event : ${allEvents}"
+                                    th:value="${event.id}"
+                                    th:text="${event.eventName}"></option>
+                        </select>
+                    </div>
+
+                    <!-- Image Upload Input -->
+                    <div class="mt-2">
+                        <label for="images" class="block text-sm font-medium text-gray-700">Upload Images</label>
+                        <input type="file" id="images" name="images" multiple class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-4">
+                        <button type="submit" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                            Create Post
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Cancel Button -->
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button id="closeModalBtn" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+<script>
+    // Show modal
+    document.getElementById("createPostBtn").addEventListener("click", function() {
+        document.getElementById("createPostModal").classList.remove("hidden");
+    });
+
+    // Hide modal
+    document.getElementById("closeModalBtn").addEventListener("click", function() {
+        document.getElementById("createPostModal").classList.add("hidden");
+    });
+</script>
+
+</body>
+</html>

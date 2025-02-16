@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add CSRF token as a meta tag in your HTML head -->
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+  <title>Explore Events</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Any additional styles can be added here */
+  </style>
+</head>
+<body class="bg-gray-30">
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-2 mt-2">Explore Events</h1>
+  <p class="text-gray-600 mb-6">Search for something you love or check out popular events in your area.</p>
+
+  <div class="flex">
+    <!-- Filters Column -->
+    <div class="w-1/4 pr-6">
+      <h2 class="text-xl font-bold mb-4">Filters</h2>
+
+      <!-- Filter Form -->
+      <form action="/events/browse" method="get" id="filterForm">
+
+        <!-- Location Filter -->
+        <div class="mb-4"> <!-- Reduced margin-bottom -->
+          <h3 class="font-semibold mb-1">Location</h3> <!-- Reduced margin-bottom -->
+          <input type="text" name="location" placeholder="Enter your location"
+                 class="mt-1 block w-full border border-gray-300 rounded-md p-1 shadow-sm focus:outline-none focus:ring focus:ring-blue-500"> <!-- Reduced padding -->
+        </div>
+        <!-- Category Filter -->
+        <div class="mb-4"> <!-- Reduced margin-bottom -->
+          <h3 class="font-semibold mb-1">Category</h3> <!-- Reduced margin-bottom -->
+          <div th:each="category : ${categories}" class="flex items-center mb-2">
+            <input type="checkbox"
+                   th:id="${'category-' + category.id}"
+                   th:name="categories"
+                   th:value="${category.id}"
+                   th:checked="${selectedCategories != null and #lists.contains(selectedCategories, category.id)}"
+                   class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+            <label th:for="${'category-' + category.id}" th:text="${category.name}" class="text-sm text-gray-700"></label>
+          </div>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="mb-4"> <!-- Reduced margin-bottom -->
+          <h3 class="font-semibold mb-1">Date</h3> <!-- Reduced margin-bottom -->
+          <div class="flex flex-col">
+            <label class="inline-flex items-center">
+              <input type="radio" id="date-today" name="date" value="today" th:checked="${selectedDate == 'today'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Today</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="date-this-week" name="date" value="this-week" th:checked="${selectedDate == 'this-week'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">This Week</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="date-this-month" name="date" value="this-month" th:checked="${selectedDate == 'this-month'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">This Month</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="date-within-2-weeks" name="date" value="within-2-weeks" th:checked="${selectedDate == 'within-2-weeks'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Within 2 Weeks</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="date-within-1-month" name="date" value="within-1-month" th:checked="${selectedDate == 'within-1-month'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Within 1 Month</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Price Filter -->
+        <div class="mb-4"> <!-- Reduced margin-bottom -->
+          <h3 class="font-semibold mb-1">Price</h3> <!-- Reduced margin-bottom -->
+          <div class="flex flex-col">
+            <label class="inline-flex items-center">
+              <input type="radio" id="price-free" name="price" value="free" th:checked="${selectedPrice == 'free'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Free</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="price-under-30" name="price" value="under-30" th:checked="${selectedPrice == 'under-30'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Under £30</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="price-30-100" name="price" value="between-30-and-100" th:checked="${selectedPrice == 'between-30-and-100'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">£30 - £100</span>
+            </label>
+            <label class="inline-flex items-center mt-1"> <!-- Reduced margin-top -->
+              <input type="radio" id="price-over-100" name="price" value="over-100" th:checked="${selectedPrice == 'over-100'}" class="mr-2 rounded border-gray-300 focus:ring-blue-500">
+              <span class="text-gray-700">Over £100</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Apply and Clear Buttons -->
+        <div class="flex justify-between">
+          <button type="submit" id="applyFilterButton" class="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 mr-2">Apply Filters</button>
+          <a href="/events/browse" class="w-full bg-gray-400 text-white font-semibold py-2 rounded-md text-center hover:bg-gray-500">Clear Filters</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Events Column -->
+    <div class="w-2/4">
+      <!-- Loop through Events -->
+      <div th:each="event : ${events}" class="bg-white rounded-lg p-4 mb-4 transition transform hover:shadow-lg hover:rounded-lg" style="width: 100%; list-style: none">
+        <div class="flex">
+          <img th:src="${event.eventImage}" alt="Event Image" class="w-1/3 h-32 object-cover rounded-lg mr-4">
+          <div class="w-2/3">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h3>
+                  <a th:href="@{/events/details/{eventId}(eventId=${event.id})}"
+                     th:text="${event.eventName}"
+                     class="text-l font-bold text-black hover:underline"></a>
+                </h3>
+              </div>
+              <div class="flex space-x-2">
+                <!-- Like/Unlike Form -->
+                <form th:action="@{/wishlist/toggleLike}" method="post">
+                  <input type="hidden" name="userId" th:value="${loggedInUser.id}">
+                  <input type="hidden" name="eventId" th:value="${event.id}">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                  <button type="submit" class="text-gray-400 hover:text-gray-600">
+                    <svg th:classappend="${event.isLiked} ? 'w-5 h-5 text-red-500' : 'w-5 h-5 text-gray-400'"
+                         id="like-icon-${event.id}" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M12.1 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12.1 21.35Z"/>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="flex items-center text-sm text-gray-600 mb-1">
+              <p th:text="${event.eventDate}"></p>
+              <p class="mx-2">•</p>
+              <p th:text="${event.startTime}"></p>
+            </div>
+            <p th:text="${event.location}" class="text-sm text-gray-600 mb-2"></p>
+            <p th:text="${'From £' + event.ticketPrice}" class="font-semibold"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="flex justify-between items-center mt-6">
+        <!-- Previous Page Button -->
+        <a th:if="${currentPage > 0}" th:href="@{/events/browse(page=${currentPage - 1}, size=${size})}"
+           class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Previous</a>
+
+        <!-- Current Page Indicator -->
+        <span th:text="'Page ' + (${currentPage + 1}) + ' of ' + ${totalPages}" class="px-4 py-2"></span>
+
+        <!-- Next Page Button -->
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/events/browse(page=${currentPage + 1}, size=${size})}"
+           class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Next</a>
+      </div>
+    </div>
+
+    <!-- Sponsors Column -->
+    <div class="w-1/4">
+      <div class="sticky-banner sticky">
+        <h2 class="text-xl font-bold mb-4">Our Sponsors</h2>
+        <!-- Sponsor Banner 1 -->
+        <div class="bg-white shadow-lg rounded-lg p-4 mb-6">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7J_jO7Ko7S4X7oo0p8OmjF896F34pIALn3A&s" alt="Sponsor Logo" class="w-full h-24 object-contain mb-2">
+          <p class="text-gray-600 text-sm mb-2">Check out amazing events sponsored by our partners.</p>
+          <a href="#" class="block bg-blue-500 text-white text-center py-2 rounded-md hover:bg-blue-600">Learn More</a>
+        </div>
+
+        <!-- Sponsor Banner 2 -->
+        <div class="bg-white shadow-lg rounded-lg p-4 mb-6">
+          <img src="https://miro.medium.com/v2/resize:fit:1200/1*KGCOY83jkn-cXBfQxTWLcg.png" alt="Sponsor Logo" class="w-full h-24 object-contain mb-2">
+          <p class="text-gray-600 text-sm mb-2">Discover exclusive deals and offers from our sponsors.</p>
+          <a href="#" class="block bg-green-500 text-white text-center py-2 rounded-md hover:bg-green-600">Explore Offers</a>
+        </div>
+
+        <!-- Sponsor Banner 3 -->
+        <div class="bg-white shadow-lg rounded-lg p-4 mb-6">
+          <img src="https://jdsportsblog.s3.amazonaws.com/wp-content/uploads/2022/01/Desktop_Homepage_Middle_Banner-1704x740_Home.jpg" alt="Sponsor Logo" class="w-full h-24 object-contain mb-2">
+          <p class="text-gray-600 text-sm mb-2">Experience top-notch services and products from our sponsors.</p>
+          <a href="#" class="block bg-red-500 text-white text-center py-2 rounded-md hover:bg-red-600">Check Services</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+<script>
+  let startTime = Date.now(); // Capture the start time when the page loads
+
+  // Function to get selected filter values
+  function getSelectedFilters() {
+    const form = document.getElementById('filterForm');
+    const formData = new FormData(form);
+    let filterType = {};
+
+    // Get selected categories (if any)
+    const categories = formData.getAll('categories');
+    if (categories.length > 0) {
+      filterType['categories'] = categories;
+    }
+
+    // Get selected date filter
+    const date = formData.get('date');
+    if (date) {
+      filterType['date'] = date;
+    }
+
+    // Get selected price filter
+    const price = formData.get('price');
+    if (price) {
+      filterType['price'] = price;
+    }
+
+    // Get location filter
+    const location = formData.get('location');
+    if (location) {
+      filterType['location'] = location;
+    }
+
+    return filterType;
+  }
+
+  // Function to handle filter application
+  function applyFilters() {
+    let endTime = Date.now();
+    let timeSpent = (endTime - startTime) / 1000; // Time spent in seconds
+
+    // Get selected filters
+    const selectedFilters = getSelectedFilters();
+
+    // Prepare payload to be sent
+    const payload = {
+      timeSpent: timeSpent,
+      filterType: selectedFilters,  // Include the filter types used
+      interactionType: "browse" // Set interaction type to 'browse'
+    };
+
+    // Send the data to the server using navigator.sendBeacon
+    navigator.sendBeacon('/behaviour/save-behaviour', JSON.stringify(payload));
+
+    console.log('Session length logged: ', timeSpent, 'seconds');
+    console.log('Selected filters: ', selectedFilters);
+
+    // Optionally, you can also submit the form here if required
+    document.getElementById('filterForm').submit();
+  }
+
+  // Attach applyFilters to the Apply Filter button
+  document.getElementById('applyFilterButton').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    applyFilters(); // Call applyFilters function
+  });
+</script>
+
+
+
+</body>
+</html>

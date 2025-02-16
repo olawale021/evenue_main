@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<body>
+<div th:fragment="popular-events">
+    <section class="py-2 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Popular Events</h2>
+            <div style="display: flex; justify-content: center;">
+                <div style="flex: 1; background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 2rem; position: relative; overflow: hidden;">
+
+                    <!-- Scroll Left Button -->
+                    <button id="scrollLeft-popular" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); z-index: 10; border: none; display: none;">
+                        <svg style="width: 1.5rem; height: 1.5rem; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Carousel Container -->
+                    <div id="popularEventsContainer" style="overflow-x: auto; display: flex; gap: 1rem; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; padding-bottom: 1rem;">
+                        <!-- Event Cards -->
+                        <a th:each="event : ${popularRecommendations}"
+                           th:href="@{/events/details/{eventId}(eventId=${event.eventId})}"
+                           style="flex: 0 0 25%; min-width: 250px; background-color: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); overflow: hidden; text-decoration: none; color: inherit;">
+
+                            <!-- Image Container -->
+                            <div style="position: relative; width: 100%; height: 10rem; overflow: hidden;">
+                                <!-- Event Image -->
+                                <img th:if="${event.eventImage != null and !event.eventImage.isEmpty()}"
+                                     th:src="${event.eventImage}"
+                                     style="width: 100%; height: 100%; object-fit: cover;"
+                                     th:alt="${event.eventName}">
+
+                                <!-- Fallback Image -->
+                                <div th:unless="${event.eventImage != null and !event.eventImage.isEmpty()}"
+                                     style="width: 100%; height: 100%; background: linear-gradient(45deg, #2C3E50, #3498db); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-calendar-alt" style="font-size: 3rem; color: rgba(255,255,255,0.5);"></i>
+                                </div>
+                            </div>
+
+                            <div style="padding: 1rem;">
+                                <!-- Price Badge -->
+                                <span style="display: inline-block; background-color: rgba(46, 204, 113, 0.1); color: #27ae60; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">
+                  <i class="fas fa-ticket-alt" style="margin-right: 0.25rem;"></i>
+                  <span th:text="'£' + ${#numbers.formatDecimal(event.ticketPrice, 1, 2)}"></span>
+                </span>
+
+                                <!-- Event Name -->
+                                <h3 th:text="${event.eventName}"
+                                    style="font-size: 1.1rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;"></h3>
+
+                                <!-- Date and Time -->
+                                <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    <i class="far fa-calendar-alt" style="margin-right: 0.5rem;"></i>
+                                    <span th:text="${#temporals.format(event.eventDate, 'EEE, MMM d')}"></span>
+                                </p>
+
+                                <!-- Location -->
+                                <p style="color: #4b5563; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    <i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>
+                                    <span th:text="${event.location}"></span>
+                                </p>
+
+                                <!-- Rating (if available) -->
+                                <p th:if="${event.predictedRating}" style="color: #e74c3c; font-size: 0.9rem; display: flex; align-items: center;">
+                                    <i class="fas fa-star" style="margin-right: 0.25rem;"></i>
+                                    <span th:text="${#numbers.formatDecimal(event.predictedRating * 100, 1, 0)} + '% Match'"></span>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Scroll Right Button -->
+                    <button id="scrollRight-popular" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); z-index: 10; border: none;">
+                        <svg style="width: 1.5rem; height: 1.5rem; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('popularEventsContainer');
+            const leftButton = document.getElementById('scrollLeft-popular');
+            const rightButton = document.getElementById('scrollRight-popular');
+
+            function updateButtonVisibility() {
+                leftButton.style.display = container.scrollLeft > 0 ? 'block' : 'none';
+                rightButton.style.display =
+                    container.scrollLeft < (container.scrollWidth - container.clientWidth - 10) ? 'block' : 'none';
+            }
+
+            leftButton.addEventListener('click', () => {
+                container.scrollBy({ left: -container.clientWidth / 2, behavior: 'smooth' });
+            });
+
+            rightButton.addEventListener('click', () => {
+                container.scrollBy({ left: container.clientWidth / 2, behavior: 'smooth' });
+            });
+
+            container.addEventListener('scroll', updateButtonVisibility);
+            window.addEventListener('resize', updateButtonVisibility);
+
+            // Hide scrollbar
+            container.style.scrollbarWidth = 'none';
+            container.style.msOverflowStyle = 'none';
+            container.style.overflow = 'hidden';
+
+            // Initial check for button visibility
+            updateButtonVisibility();
+        });
+    </script>
+</div>
+</body>
+</html>

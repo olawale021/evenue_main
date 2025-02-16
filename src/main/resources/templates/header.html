@@ -1,0 +1,90 @@
+<div th:fragment="headerFragment">
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-purple-800">
+                    <a href="/">EVENUE</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/events/browse" class="text-gray-800 hover:text-purple-600">Find Events</a>
+
+                    <!-- Only show Create Events if user is an ORGANIZER -->
+                    <a th:if="${#arrays.contains(#authentication.authorities.![authority], 'ROLE_ORGANIZER')}"
+                       href="/events/create" class="text-gray-800 hover:text-purple-600">Create Events</a>
+
+                    <a href="/posts" class="text-gray-800 hover:text-purple-600">Community</a>
+                    <a href="/recommendations" class="text-gray-800 hover:text-purple-600">Recommendations</a>
+                    <a href="#" class="text-gray-800 hover:text-purple-600">Contact Us</a>
+                </div>
+                <div>
+                    <!-- Check if the user is authenticated using Spring Security's #authentication object -->
+                    <div th:if="${#authentication?.isAuthenticated()} and !${#authentication.name.equals('anonymousUser')}" class="relative">
+                        <button id="user-menu-button" class="text-gray-800 px-4 py-2 rounded-md hover:bg-gray-100 flex items-center space-x-2">
+                            <span>Welcome, <span th:text="${#authentication.name}"></span></span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                            <!-- Dashboard Link based on user's role -->
+                            <a th:if="${#arrays.contains(#authentication.authorities.![authority], 'ROLE_ORGANIZER')}"
+                               href="/organizer/dashboard" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                Organizer Dashboard
+                            </a>
+                            <a th:if="${#arrays.contains(#authentication.authorities.![authority], 'ROLE_ATTENDEE')}"
+                               href="/users/attendee/dashboard" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                Dashboard
+                            </a>
+
+                            <!-- Browse Events Link -->
+                            <a href="/events/browse" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Browse Events</a>
+
+                            <a href="/wishlist" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Wishlist</a>
+
+                            <a href="/friends" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Friends</a>
+
+                            <a href="/users/preferred-categories" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Preferences</a>
+
+                            <!-- Logout Form for POST request -->
+                            <form action="/users/logout" method="POST" class="block">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div th:if="${!#authentication?.isAuthenticated()} or ${#authentication.name.equals('anonymousUser')}">
+                        <a href="/users/login" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition duration-300">Login</a>
+                        <a href="/users/register" class="bg-gray-100 text-purple-800 px-4 py-2 rounded-md hover:bg-gray-200 transition duration-300 border border-purple-600">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <th:block th:if="${#authentication?.isAuthenticated()} and !${#authentication.name.equals('anonymousUser')}">
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                const userMenuButton = document.getElementById('user-menu-button');
+                const userMenu = document.getElementById('user-menu');
+
+                if (userMenuButton && userMenu) {
+                    userMenuButton.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        userMenu.classList.toggle('hidden');
+                    });
+
+                    // Close the dropdown if clicked outside
+                    document.addEventListener('click', function(event) {
+                        if (!userMenuButton.contains(event.target) && !userMenu.contains(event.target)) {
+                            userMenu.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+        </script>
+    </th:block>
+</div>

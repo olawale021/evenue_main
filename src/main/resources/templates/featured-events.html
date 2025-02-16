@@ -1,0 +1,81 @@
+<div th:fragment="featured-events">
+  <section class="py-2 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Featured Events</h2>
+      <div style="display: flex; justify-content: center;">
+        <div style="flex: 1; background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 2rem; position: relative; overflow: hidden;">
+
+          <!-- Scroll Left Button -->
+          <button id="scrollLeft" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); z-index: 10; border: none; display: none;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Carousel Container -->
+          <div id="eventContainer" style="overflow-x: auto; display: flex; gap: 1rem; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; padding-bottom: 1rem;">
+            <!-- Event Cards -->
+            <a th:each="event : ${events}" th:href="@{/events/details/{eventId}(eventId=${event.id})}" style="flex: 0 0 25%; min-width: 250px; background-color: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); overflow: hidden; text-decoration: none; color: inherit;">
+              <img th:src="${event.eventImage}" alt="Event Image" style="width: 100%; height: 10rem; object-fit: cover;">
+              <div style="padding: 1rem;">
+                <span style="display: inline-block; background-color: #e0e7ff; color: #4338ca; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 9999px; margin-bottom: 0.5rem;">Sales end soon</span>
+                <h3 th:text="${event.eventName}" style="font-size: 1.1rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem;"></h3>
+                <p th:text="${#temporals.format(event.eventDate, 'EEE, MMM d') + ' • ' + event.startTime}" style="color: #4b5563; font-size: 0.9rem; margin-bottom: 0.5rem;"></p>
+                <p th:text="${event.location}" style="color: #4b5563; font-size: 0.9rem; margin-bottom: 0.5rem;"></p>
+                <p style="color: #1f2937; font-weight: bold; font-size: 0.9rem; margin-bottom: 0.5rem;" th:text="'From £' + ${#numbers.formatDecimal(event.ticketPrice, 1, 2)}"></p>
+                <p style="color: #4b5563; display: flex; align-items: center; font-size: 0.8rem;">
+                  <span th:text="${event.organizerName}"></span>
+                  <span style="margin: 0 0.5rem;">•</span>
+                  <svg style="width: 0.8rem; height: 0.8rem; color: #4b5563; margin-right: 0.25rem;" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                  </svg>
+                  <span th:text="${event.venue}"></span>
+                </p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Scroll Right Button -->
+          <button id="scrollRight" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); z-index: 10; border: none;">
+            <svg style="width: 1.5rem; height: 1.5rem; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.getElementById('eventContainer');
+      const leftButton = document.getElementById('scrollLeft');
+      const rightButton = document.getElementById('scrollRight');
+
+      function updateButtonVisibility() {
+        leftButton.style.display = container.scrollLeft > 0 ? 'block' : 'none';
+        rightButton.style.display =
+                container.scrollLeft < container.scrollWidth - container.clientWidth - 10 ? 'block' : 'none';
+      }
+
+      leftButton.addEventListener('click', () => {
+        container.scrollBy({ left: -container.clientWidth / 2, behavior: 'smooth' });
+      });
+
+      rightButton.addEventListener('click', () => {
+        container.scrollBy({ left: container.clientWidth / 2, behavior: 'smooth' });
+      });
+
+      container.addEventListener('scroll', updateButtonVisibility);
+      window.addEventListener('resize', updateButtonVisibility);
+
+      // Hide scrollbar
+      container.style.scrollbarWidth = 'none';
+      container.style.msOverflowStyle = 'none';
+      container.style.overflow = 'hidden';
+
+      // Initial check for button visibility
+      updateButtonVisibility();
+    });
+  </script>
+</div>

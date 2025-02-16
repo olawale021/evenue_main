@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Header -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">Your Wishlist</h1>
+
+    <!-- If there are wishlist items, display them -->
+    <div th:if="${wishlistItems.size() > 0}">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Iterate through wishlist items -->
+            <div th:each="wishlistItem : ${wishlistItems}" class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img th:src="${wishlistItem.event.eventImage}" alt="Event Image" class="w-full h-36 object-cover">
+                <div class="p-3">
+                    <h2 class="text-lg font-semibold mb-1" th:text="${wishlistItem.event.eventName}">Event Name</h2>
+                    <p class="text-gray-600 text-sm mb-2 truncate" th:text="${wishlistItem.event.description}">Event Description</p>
+                    <div class="text-gray-700 text-xs mb-2">
+                        <span class="font-semibold">Date: </span><span th:text="${#temporals.format(wishlistItem.event.eventDate, 'MMMM d, yyyy')}">Event Date</span>
+                    </div>
+                    <div class="text-gray-700 text-xs mb-2">
+                        <span class="font-semibold">Location: </span><span th:text="${wishlistItem.event.location}">Location</span>
+                    </div>
+
+                    <!-- Remove from wishlist button -->
+                    <form th:action="@{/wishlist/remove/{wishlistId}(wishlistId=${wishlistItem.id})}" method="post">
+                        <!-- CSRF Token -->
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <!-- Hidden input to simulate DELETE method -->
+                        <input type="hidden" name="_method" value="delete" />
+                        <button class="w-full bg-red-500 text-white py-1 rounded-md hover:bg-red-600 transition">
+                            Remove
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- If there are no items in the wishlist, display a message -->
+    <div th:if="${wishlistItems.size() == 0}" class="text-center mt-12">
+        <p class="text-gray-600 text-lg">Your wishlist is currently empty.</p>
+        <a href="/browse" class="mt-6 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
+            Browse Events
+        </a>
+    </div>
+</div>
+
+<!-- Featured Events Section -->
+<section>
+
+    <div th:insert="~{featured-events :: featured-events}"></div>
+</section>
+
+<!-- Footer -->
+<div th:insert="footer :: footer"></div>
+
+</body>
+</html>

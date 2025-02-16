@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event - Evenue</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F9FAFB; /* Softer background color */
+        }
+        .form-container {
+            max-width: 900px; /* Increased form width for two-column layout */
+            margin-top: 3rem;
+            padding: 2rem 2.5rem;
+        }
+        .form-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #374151; /* Darker text for titles */
+        }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.375rem;
+            background-color: #FFFFFF;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus {
+            border-color: #6366F1; /* Focus color */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* Soft blue glow */
+        }
+        .form-label {
+            font-weight: 500;
+            color: #4B5563; /* Slightly darker label */
+        }
+        .form-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            text-align: center;
+            background-color: #6366F1;
+            color: #FFFFFF;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .form-button:hover {
+            background-color: #4F46E5; /* Darker on hover */
+        }
+        .form-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<main class="flex-grow container mx-auto px-4 py-8">
+    <div class="form-container bg-white rounded-lg shadow-md mx-auto">
+        <h1 class="form-title text-center mb-8">Create Event</h1>
+        <form th:action="@{/events/create}" method="post" th:object="${event}" enctype="multipart/form-data" class="space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <label for="eventName" class="form-label">Event Name</label>
+                    <input type="text" th:field="*{eventName}" id="eventName" class="form-input" required>
+                </div>
+                <div>
+                    <label for="organizerName" class="form-label">Organizer Name</label>
+                    <input type="text" th:field="*{organizerName}" id="organizerName" class="form-input" required>
+                </div>
+                <div>
+                    <label for="description" class="form-label">Description</label>
+                    <textarea th:field="*{description}" id="description" rows="4" class="form-input"></textarea>
+                </div>
+                <div>
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" th:field="*{location}" id="location" class="form-input" required>
+                </div>
+                <div>
+                    <label for="venue" class="form-label">Venue</label>
+                    <input type="text" th:field="*{venue}" id="venue" class="form-input" required>
+                </div>
+                <div>
+                    <label for="eventDate" class="form-label">Event Date</label>
+                    <input type="date" th:field="*{eventDate}" id="eventDate" class="form-input" required>
+                </div>
+                <div>
+                    <label for="startTime" class="form-label">Start Time</label>
+                    <input type="time" th:field="*{startTime}" id="startTime" class="form-input" required>
+                </div>
+                <div>
+                    <label for="endTime" class="form-label">End Time</label>
+                    <input type="time" th:field="*{endTime}" id="endTime" class="form-input" required>
+                </div>
+                <div>
+                    <label for="ticketPrice" class="form-label">Ticket Price</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">£</span>
+                        <input type="number" th:field="*{ticketPrice}" id="ticketPrice" class="form-input pl-7" placeholder="0.00" step="0.01" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="eventImageFile" class="form-label">Event Image</label>
+                    <input type="file" name="eventImageFile" id="eventImageFile" class="form-input" accept="image/*">
+                </div>
+                <div>
+                    <label for="eventCategory" class="form-label">Event Category</label>
+                    <select th:field="*{eventCategory}" id="eventCategory" class="form-select" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="form-button mt-6">Create Event</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<!-- Footer Section -->
+<div th:insert="~{footer :: footer}"></div>
+
+</body>
+</html>

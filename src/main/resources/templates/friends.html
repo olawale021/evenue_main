@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Friends</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Fragment -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">Your Friends</h1>
+
+  <!-- Friends List Section -->
+  <div th:if="${friends.size() > 0}" class="mb-8">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <!-- Iterate through friends -->
+      <li th:each="friend : ${friends}" class="bg-white p-4 rounded-lg shadow-md">
+        <div class="flex items-center space-x-4">
+          <img src="https://t4.ftcdn.net/jpg/05/42/36/11/360_F_542361185_VFRJWpR2FH5OiAEVveWO7oZnfSccZfD3.jpg" alt="" class="w-12 h-12 rounded-full object-cover">
+          <!-- Clickable friend name -->
+          <a th:href="@{/friends/profile/{friendId}(friendId=${friend.id})}" class="text-lg font-semibold text-gray-800 hover:text-blue-500 transition">
+            <span th:text="${friend.userName}">Friend Name</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- No friends added message -->
+  <div th:if="${friends.size() == 0}" class="text-center py-12">
+    <p class="text-xl text-gray-600">You have no friends added yet.</p>
+    <a href="/browse" class="mt-6 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
+      Browse Events
+    </a>
+  </div>
+
+  <!-- Friend Requests Section -->
+  <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Incoming Friend Requests</h2>
+
+    <div th:if="${pendingFriendRequests.size() > 0}">
+      <ul>
+        <li th:each="request : ${pendingFriendRequests}" class="mb-4 bg-gray-100 p-4 shadow-md rounded-lg">
+          <div class="flex justify-between">
+            <div>
+              <h3 class="text-lg font-bold" th:text="${request.sender.userName}">Request Sender</h3>
+              <p class="text-gray-600" th:text="'Email: ' + ${request.sender.email}">Email</p>
+            </div>
+            <div class="flex space-x-4">
+              <!-- Accept Button -->
+              <form th:action="@{/friends/accept/{requestId}(requestId=${request.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Accept</button>
+              </form>
+
+              <!-- Reject Button -->
+              <form th:action="@{/friends/reject/{requestId}(requestId=${request.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Reject</button>
+              </form>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div th:if="${pendingFriendRequests.size() == 0}" class="text-center py-12">
+      <p class="text-xl text-gray-600">No incoming friend requests.</p>
+    </div>
+  </div>
+
+  <!-- Search Form Section -->
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Search Friends</h2>
+    <form action="/friends/search" method="get" class="flex space-x-4">
+      <input type="text" name="username" placeholder="Search friends by username"
+             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+             required />
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+        Search
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer -->
+<div th:insert="~{footer :: footer}"></div>
+
+</body>
+</html>

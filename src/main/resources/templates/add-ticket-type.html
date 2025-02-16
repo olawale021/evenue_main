@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Ticket Type</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<body class="bg-gray-100">
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4">Add Ticket Type</h1>
+  <p class="text-gray-600 mb-6">Use the form below to add a new ticket type for your event.</p>
+
+  <!-- Display Event Name -->
+  <div class="mb-4">
+    <h2 class="text-2xl font-semibold text-gray-800">Event: <span th:text="${event.eventName}"></span></h2>
+  </div>
+
+  <!-- Error message block -->
+  <div th:if="${error}" class="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
+    <p th:text="${error}"></p>
+  </div>
+
+  <!-- Success message block -->
+  <div th:if="${message}" class="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
+    <p th:text="${message}"></p>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <form th:action="@{/tickets/types/add}" th:object="${ticketType}" method="post" class="space-y-4">
+      <!-- Hidden Event ID -->
+      <input type="hidden" name="eventId" th:value="${event.id}">
+
+      <!-- Ticket Type -->
+      <div>
+        <label for="typeName" class="block text-sm font-medium text-gray-700">Ticket Type</label>
+        <select id="typeName" th:field="*{typeName}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          <option value="VIP">VIP</option>
+          <option value="GENERAL_ADMISSION">General Admission</option>
+          <option value="EARLY_BIRD">Early Bird</option>
+          <option value="STUDENT">Student</option>
+          <option value="CHILD">Child</option>
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+        <textarea id="description" th:field="*{description}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" rows="4"></textarea>
+      </div>
+
+      <!-- Price -->
+      <div>
+        <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+        <input id="price" type="number" th:field="*{price}" step="0.01" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+      </div>
+
+      <!-- Quantity -->
+      <div>
+        <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+        <input id="quantity" type="number" th:field="*{quantity}" min="1" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Ticket Type</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

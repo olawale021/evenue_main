@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Evenue</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="w-full md:w-1/4 mb-8 md:mb-0">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+                <nav>
+                    <ul class="space-y-2">
+                        <li><a href="/users/attendee/dashboard" class="block px-4 py-2 rounded-md text-indigo-600 bg-indigo-50 font-medium">Overview</a></li>
+                        <li><a href="/users/tickets" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Tickets</a></li>
+                        <li><a href="/users/upcoming-events" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">Upcoming Events</a></li>
+                        <li><a href="/users/profile/edit" class="block px-4 py-2 rounded-md text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out">My Profile</a></li>
+                        <li><a th:href="@{/users/logout}" class="block px-4 py-2 rounded-md text-red-600 hover:bg-red-50 transition duration-150 ease-in-out">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="w-full md:w-3/4 md:pl-8">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Your Profile</h1>
+                <form action="#" th:action="@{/users/profile/edit}" method="post" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">Username</label>
+                            <input type="text" id="userName" name="userName" th:value="${user.userName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" id="firstName" name="firstName" th:value="${user.firstName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" th:value="${user.lastName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" th:value="${user.email}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                            <input type="text" id="contactNumber" name="contactNumber" th:value="${user.contactNumber}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="addressLine1" class="block text-sm font-medium text-gray-700">Address Line 1</label>
+                        <input type="text" id="addressLine1" name="addressLine1" th:value="${user.addressLine1}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+                            <input type="text" id="city" name="city" th:value="${user.city}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="state" class="block text-sm font-medium text-gray-700">State</label>
+                            <input type="text" id="state" name="state" th:value="${user.state}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="postalCode" class="block text-sm font-medium text-gray-700">Postal Code</label>
+                            <input type="text" id="postalCode" name="postalCode" th:value="${user.postalCode}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                            <input type="text" id="country" name="country" th:value="${user.country}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save Changes
+                        </button>
+                        <a th:href="@{/users/profile}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Cancel and return to profile</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+</body>
+</html>

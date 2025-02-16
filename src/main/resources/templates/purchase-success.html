@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Confirmation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<main class="container mx-auto px-4 py-12">
+    <div class="max-w-2xl mx-auto">
+        <!-- Success Card -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Success Banner -->
+            <div class="bg-green-500 p-6 text-center">
+                <svg class="w-16 h-16 mx-auto text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h1 class="mt-4 text-2xl font-bold text-white">Purchase Successful!</h1>
+            </div>
+
+            <!-- Content Section -->
+            <div class="p-8">
+                <!-- Order Summary -->
+                <div class="space-y-6">
+                    <!-- Ticket Code Section -->
+                    <div class="text-center">
+                        <h2 class="text-lg font-medium text-gray-700">Your Ticket Code</h2>
+                        <div class="mt-2 p-4 bg-blue-50 rounded-lg">
+                            <p class="text-2xl font-mono font-bold text-blue-600" th:text="${ticketCode}"></p>
+                        </div>
+                        <!-- QR Code Container -->
+                        <div id="qrcode" class="mt-4 flex justify-center"></div>
+                    </div>
+                    <!-- Important Information -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-700">Important Information:</h3>
+                        <ul class="mt-2 space-y-2 text-sm text-gray-600">
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                </svg>
+                                A confirmation email has been sent to your registered email address
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path>
+                                </svg>
+                                Please save your ticket code for future reference
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div class="mt-8 space-y-3">
+                    <a href="//users/tickets" class="block w-full text-center bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-150">
+                        View Ticket Details
+                    </a>
+                    <a href="/" class="block w-full text-center bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition duration-150">
+                        Return to Homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Need Help Section -->
+        <div class="mt-8 text-center">
+            <p class="text-gray-600">Need help? <a href="/contact" class="text-blue-600 hover:underline">Contact Support</a></p>
+        </div>
+    </div>
+</main>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+<script>
+    // Generate QR Code for the ticket
+    window.onload = function() {
+        var qr = qrcode(0, 'M');
+        var ticketCode = document.querySelector('[th\\:text="${ticketCode}"]').textContent;
+        qr.addData(ticketCode);
+        qr.make();
+        document.getElementById('qrcode').innerHTML = qr.createImgTag(5);
+    }
+</script>
+</body>
+</html>

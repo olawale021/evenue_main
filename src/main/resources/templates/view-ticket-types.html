@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en" xmlns:th="http://www.thymeleaf.org">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ticket Types</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4" th:text="'Ticket Types for ' + ${event.eventName}">Ticket Types</h1>
+    <p class="text-gray-600 mb-6" th:text="'Below are the ticket types for ' + ${event.eventName}"></p>
+
+    <!-- Success message block -->
+    <div th:if="${message}" class="bg-green-100 text-green-800 p-4 rounded-lg mb-4">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- Error message block -->
+    <div th:if="${error}" class="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
+        <p th:text="${error}"></p>
+    </div>
+
+    <div th:if="${ticketTypes.size() > 0}">
+        <table class="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead>
+            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Ticket Type</th>
+                <th class="py-3 px-6 text-left">Description</th>
+                <th class="py-3 px-6 text-left">Price</th>
+                <th class="py-3 px-6 text-left">Quantity</th>
+                <th class="py-3 px-6 text-left">Remaining Quantity</th>
+                <th class="py-3 px-6 text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="text-gray-600 text-sm font-light">
+            <tr th:each="ticketType : ${ticketTypes}" class="border-b border-gray-200 hover:bg-gray-100">
+                <td class="py-3 px-6 text-left">
+                    <span th:text="${ticketType.typeName}" class="font-semibold text-gray-900"></span>
+                </td>
+                <td class="py-3 px-6 text-left" th:text="${ticketType.description}"></td>
+                <td class="py-3 px-6 text-left" th:text="'£' + ${ticketType.price}"></td>
+                <td class="py-3 px-6 text-left" th:text="${ticketType.quantity}"></td>
+                <td class="py-3 px-6 text-left" th:text="${ticketType.remainingQuantity}"></td>
+                <td class="py-3 px-6 text-center">
+                    <a th:href="@{/tickets/types/edit/{ticketTypeId}(ticketTypeId=${ticketType.ticketTypeId})}" class="text-blue-600 hover:text-blue-800">Edit</a> |
+                    <a th:href="@{/tickets/types/delete/{ticketTypeId}(ticketTypeId=${ticketType.ticketTypeId})}" class="text-red-600 hover:text-red-800">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${ticketTypes.size() == 0}" class="mt-6">
+        <p class="text-gray-600">No ticket types have been added for this event yet.</p>
+    </div>
+
+    <!-- Add Ticket Type Button -->
+    <div class="mt-6">
+        <a th:href="@{/tickets/types/add/{eventId}(eventId=${event.id})}" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center">
+            <svg class="w-4 h-4 fill-current mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M13 2h-2v2h2V2zm4.001 10H13v3H11v-3H7v-2h4V7h2v3h4.001l-.001 2zm7.242 6.555l-5.099 5.099c-.586.585-1.537.585-2.122 0l-9.697-9.697-5.742.958a.746.746 0 01-.88-.88l.959-5.743 9.696-9.696c.586-.585 1.537-.585 2.122 0l5.099 5.099a1.503 1.503 0 010 2.122l-1.652 1.652-3.939 3.939 1.6 1.6 3.939-3.939 1.652 1.652c.585.586.585 1.537 0 2.122zm-11.139-7.759L8.442 5.621 4.734 9.329l5.662 5.662 4.151-4.151-1.743-1.744zm3.544-3.544l1.394-1.394 2.317 2.316-1.394 1.394-2.317-2.316z"/>
+            </svg>
+            <span>Add Ticket Type</span>
+        </a>
+    </div>
+</div>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+</body>
+</html>

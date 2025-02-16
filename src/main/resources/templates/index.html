@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVENUE - Discover Exciting Events Near You</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-section {
+            background-image: url('https://res.cloudinary.com/dtvclnkeo/image/upload/v1727479157/u3n41xtbbydj2hyuhm98.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 50vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align content to the bottom */
+            padding: 0 20px 20px; /* Add padding for spacing */
+        }
+        .hero-overlay {
+           width: 100%;
+        }
+        .hero-button {
+            display: inline-block;
+            background-color: #fff;
+            color: #6b21a8; /* Adjust color as needed */
+            padding: 15px 30px;
+            margin-left: 50px;
+            border-radius: 50px; /* Full-rounded button */
+            font-size: 1.25rem; /* Larger font size */
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-button:hover {
+            background-color: #f3f4f6; /* Lighter background on hover */
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+        }
+        .category-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+        .event-categories {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .chatbot-toggle {
+            background-color: #6b21a8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .chatbot-frame {
+            display: none;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section with Background Image -->
+    <section class="hero-section">
+        <div class="hero-overlay">
+            <a href="#" class="hero-button">Explore Events</a>
+        </div>
+    </section>
+
+    <!-- Event Categories Section -->
+    <section class="py-8 bg-white">
+        <div class="event-categories">
+            <div class="grid grid-cols-4 md:grid-cols-8 gap-4 text-center">
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Music</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Nightlife</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Performing Arts</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Holidays</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Dating</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Hobbies</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Business</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="category-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                    </div>
+                    <span class="mt-2 text-sm">Food & Drink</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- recommended-popular Section -->
+    <section>
+
+        <div th:replace="~{fragments/recommended-popular-events :: popular-events}"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-gray-100 py-8">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-12 text-center">Why Choose EVENUE?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-4 text-purple-800">Personalized Recommendations</h3>
+                    <p class="text-gray-600">Discover events tailored to your interests with our AI-powered recommendation engine.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-4 text-purple-800">Secure Ticketing</h3>
+                    <p class="text-gray-600">Book with confidence using our secure QR code-based ticket system.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h3 class="text-xl font-semibold mb-4 text-purple-800">Social Integration</h3>
+                    <p class="text-gray-600">Share your experiences and discover events your friends are attending.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chatbot Section -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" onclick="toggleChatbot()">Chat with Us</button>
+        <iframe class="chatbot-frame" width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/313cfe32-f0f5-48f9-9df4-f03189b9c7b4"></iframe>
+    </div>
+
+</main>
+
+
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+
+</body>
+
+<script>
+    function toggleChatbot() {
+        var chatbotFrame = document.querySelector('.chatbot-frame');
+        var chatbotToggle = document.querySelector('.chatbot-toggle');
+        if (chatbotFrame.style.display === 'none') {
+            chatbotFrame.style.display = 'block';
+            chatbotToggle.textContent = 'Close Chat';
+        } else {
+            chatbotFrame.style.display = 'none';
+            chatbotToggle.textContent = 'Chat with Us';
+        }
+    }
+</script>
+
+</html>

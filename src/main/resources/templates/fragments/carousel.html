@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="carousel(carouselId, recommendations)"
+     style="position: relative; padding: 10px 0;">
+
+    <!-- Left Scroll Button -->
+    <button th:id="'scrollLeft-' + ${carouselId}"
+            style="position: absolute; left: -20px; top: 50%; transform: translateY(-50%);
+                   background-color: white; border-radius: 50%; width: 40px; height: 40px;
+                   border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10;
+                   cursor: pointer; display: none; align-items: center; justify-content: center;">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <!-- Events Container -->
+    <div th:id="'container-' + ${carouselId}"
+         style="display: flex; overflow-x: auto; gap: 20px; padding: 20px 0;
+                scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;">
+
+        <!-- Event Cards -->
+        <div th:each="item : ${recommendations}"
+             class="event-card"
+             style="flex: 0 0 300px; min-width: 300px; background: white; border-radius: 12px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;">
+
+            <!-- Event Image -->
+            <div style="position: relative; height: 200px; overflow: hidden;">
+                <img th:if="${item.eventImage != null and !item.eventImage.isEmpty()}"
+                     th:src="${item.eventImage}"
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     th:alt="${item.eventName}">
+
+                <!-- Fallback Image -->
+                <div th:unless="${item.eventImage != null and !item.eventImage.isEmpty()}"
+                     style="width: 100%; height: 100%; background: linear-gradient(45deg, #2C3E50, #3498db);
+                            display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-calendar-alt" style="font-size: 3rem; color: rgba(255,255,255,0.5);"></i>
+                </div>
+            </div>
+
+            <!-- Event Details -->
+            <div style="padding: 20px;">
+                <!-- Event Name -->
+                <h3 style="font-size: 1.2rem; font-weight: 600; color: #2C3E50; margin-bottom: 10px;"
+                    th:text="${item.eventName}">Event Name</h3>
+
+                <!-- Date and Location -->
+                <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 5px;">
+                    <i class="far fa-calendar-alt" style="margin-right: 8px;"></i>
+                    <span th:text="${#temporals.format(item.eventDate, 'dd MMM yyyy')}">Date</span>
+                </p>
+                <p style="color: #7f8c8d; font-size: 0.9rem;">
+                    <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
+                    <span th:text="${item.location}">Location</span>
+                </p>
+
+                <!-- Price and Rating -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0;">
+                    <span style="background: rgba(46, 204, 113, 0.1); padding: 5px 12px; border-radius: 20px;
+                               color: #27ae60; font-weight: 500;">
+                        <i class="fas fa-ticket-alt" style="margin-right: 5px;"></i>
+                        <span th:text="'£' + ${#numbers.formatDecimal(item.ticketPrice, 1, 2)}">Price</span>
+                    </span>
+
+                    <span th:if="${item.predictedRating}"
+                          style="background: rgba(231, 76, 60, 0.1); padding: 5px 12px; border-radius: 20px;
+                                 color: #e74c3c; font-weight: 500;">
+                        <i class="fas fa-star" style="margin-right: 5px;"></i>
+                        <span th:text="${#numbers.formatDecimal(item.predictedRating * 100, 1, 0)} + '%'">
+                            Rating
+                        </span>
+                    </span>
+                </div>
+
+                <!-- View Button -->
+                <a th:href="@{/events/details/{id}(id=${item.eventId})}"
+                   style="display: block; text-align: center; background-color: #3498db;
+                          color: white; padding: 10px; border-radius: 8px; text-decoration: none;
+                          font-weight: 500; transition: background-color 0.3s ease;"
+                   onmouseover="this.style.backgroundColor='#2980b9'"
+                   onmouseout="this.style.backgroundColor='#3498db'">
+                    View Event <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Scroll Button -->
+    <button th:id="'scrollRight-' + ${carouselId}"
+            style="position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
+                   background-color: white; border-radius: 50%; width: 40px; height: 40px;
+                   border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10;
+                   cursor: pointer; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const containerId = 'container-' + [[${carouselId}]];
+            const leftButtonId = 'scrollLeft-' + [[${carouselId}]];
+            const rightButtonId = 'scrollRight-' + [[${carouselId}]];
+
+            const container = document.getElementById(containerId);
+            const leftButton = document.getElementById(leftButtonId);
+            const rightButton = document.getElementById(rightButtonId);
+
+            // Hide scrollbar
+            container.style.cssText += '::-webkit-scrollbar { display: none; }';
+
+            function updateButtonVisibility() {
+                leftButton.style.display = container.scrollLeft > 0 ? 'flex' : 'none';
+                rightButton.style.display =
+                    container.scrollLeft < (container.scrollWidth - container.clientWidth - 10) ? 'flex' : 'none';
+            }
+
+            leftButton.addEventListener('click', () => {
+                container.scrollBy({ left: -300, behavior: 'smooth' });
+            });
+
+            rightButton.addEventListener('click', () => {
+                container.scrollBy({ left: 300, behavior: 'smooth' });
+            });
+
+            container.addEventListener('scroll', updateButtonVisibility);
+            window.addEventListener('resize', updateButtonVisibility);
+
+            // Initial check
+            updateButtonVisibility();
+
+            // Add hover effects for cards
+            const cards = container.querySelectorAll('.event-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                });
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Events</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+<!-- Header Section -->
+<div th:insert="~{header :: headerFragment}"></div>
+
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-3">My Events</h1>
+  <p class="text-gray-600 mb-4 text-sm">Here you can manage all the events you've created.</p>
+
+  <div th:if="${events.size() > 0}" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div th:each="event : ${events}" class="bg-white rounded-lg shadow-md overflow-hidden">
+      <!-- Event Image -->
+      <div class="h-32 overflow-hidden">
+        <img th:if="${event.eventImage != null and !event.eventImage.isEmpty()}"
+             th:src="${event.eventImage}"
+             alt="Event Image"
+             class="w-full h-full object-cover">
+        <div th:if="${event.eventImage == null or event.eventImage.isEmpty()}"
+             class="w-full h-full bg-gray-300 flex items-center justify-center">
+          <span class="text-gray-500 text-sm">No Image</span>
+        </div>
+      </div>
+      <div class="p-3">
+        <h2 class="text-base font-semibold mb-1 truncate">
+          <a th:href="@{/events/details/{eventId}(eventId=${event.id})}"
+             th:text="${event.eventName}"
+             class="text-blue-600 hover:text-blue-800 hover:underline"></a>
+        </h2>
+        <p class="text-xs text-gray-600 mb-1" th:text="${#temporals.format(event.eventDate, 'MMM d, yyyy')}"></p>
+        <p class="text-xs text-gray-700 mb-2 truncate" th:text="${event.location}"></p>
+        <div class="flex justify-between items-center mb-2 text-xs">
+          <span class="font-semibold text-gray-600">Tickets Sold:</span>
+          <span class="font-bold">0</span>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-3 py-2 flex justify-between items-center text-xs">
+        <a th:href="@{/events/edit/{eventId}(eventId=${event.id})}" class="text-blue-600 hover:text-blue-800">Edit</a>
+        <a th:href="@{/events/delete/{eventId}(eventId=${event.id})}" class="text-red-600 hover:text-red-800">Delete</a>
+        <a th:href="@{/tickets/types/add/{eventId}(eventId=${event.id})}" class="text-green-600 hover:text-green-800 flex items-center">
+          <svg class="w-4 h-4 fill-current mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 2h-2v2h2V2zm4.001 10H13v3H11v-3H7v-2h4V7h2v3h4.001l-.001 2zm7.242 6.555l-5.099 5.099c-.586.585-1.537.585-2.122 0l-9.697-9.697-5.742.958a.746.746 0 01-.88-.88l.959-5.743 9.696-9.696c.586-.585 1.537-.585 2.122 0l5.099 5.099a1.503 1.503 0 010 2.122l-1.652 1.652-3.939 3.939 1.6 1.6 3.939-3.939 1.652 1.652c.585.586.585 1.537 0 2.122zm-11.139-7.759L8.442 5.621 4.734 9.329l5.662 5.662 4.151-4.151-1.743-1.744zm3.544-3.544l1.394-1.394 2.317 2.316-1.394 1.394-2.317-2.316z"/>
+          </svg>
+          <span>Add Tickets</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div th:if="${events.size() == 0}" class="mt-4">
+    <p class="text-gray-600 text-sm">You have not created any events yet.</p>
+  </div>
+</div>
+
+<!-- Footer Section -->
+<div th:insert="footer :: footer"></div>
+</body>
+</html>
