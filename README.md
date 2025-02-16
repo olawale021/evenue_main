@@ -4,14 +4,15 @@ Evenue is a comprehensive event management and booking platform that simplifies 
 ticket booking, and personalized recommendations. The platform integrates a chatbot on WhatsApp using the Meta API, 
 allowing users to interact and book events seamlessly.
 
-## Features
+Features
 
-- **Event Discovery:** Browse upcoming events with categories and filters.
-- **Personalized Recommendations:** Event suggestions based on user preferences and interactions.
-- **WhatsApp Chatbot Integration:** Book tickets and get event details via WhatsApp.
-- **User Authentication:** Secure login and registration.
-- **Event Management:** Organizers can create and manage events.
-- **Ticket Booking System:** Seamless ticket reservation with real-time updates.
+    🔥 Event Discovery & Personalized Recommendations
+    🎟️ Ticket Booking & Confirmation
+    📱 WhatsApp Chatbot Integration (via Meta API)
+    🔐 User Authentication & Authorization
+    📊 Machine Learning-Based Event Suggestions
+    💬 Social Features – Users can post about events, like, and follow friends
+    🎯 Admin Dashboard – Manage events, tickets, and users
 
 ## Technologies Used
 
@@ -22,7 +23,55 @@ allowing users to interact and book events seamlessly.
 - **Chatbot Integration:** Dialogflow & Meta API for WhatsApp
 - **Build Tool:** Maven
 
+- Project Structure
+
+Evenue follows a well-structured MVC (Model-View-Controller) architecture.
+1️⃣ Models (Entity Classes)
+
+The models represent database entities, including:
+
+    UserModel.java – Handles user authentication and profile details
+    EventModel.java – Stores event details
+    TicketModel.java – Manages ticket bookings
+    TicketTypeModel.java – Defines ticket types (VIP, General, etc.)
+    UserActivityModel.java – Tracks user interactions for recommendations
+    etc
+
+2️⃣ Controllers (REST APIs)
+
+The controllers handle user interactions and API requests:
+
+    DialogflowWebhookController.java – Manages chatbot interactions with Dialogflow
+    WhatsAppWebhookController.java – Handles WhatsApp messages via Meta API
+    EventController.java – Provides event-related endpoints
+    TicketController.java – Manages ticket purchases and confirmations
+    UserController.java – Handles user authentication and profile management
+
+
+3️⃣ Services (Business Logic)
+
+The services contain the main logic for handling data:
+
+    UserService.java – Manages user authentication and profile retrieval
+    EventService.java – Fetches event details and recommendations
+    TicketService.java – Handles ticket booking and verification
+    RecommendationService.java – Implements AI-based event recommendations
+
+4️⃣ Repositories (Database Access)
+
+The repositories interact with the database using Spring Data JPA:
+
+    UserRepository.java – Handles user queries
+    EventRepository.java – Fetches events from the database
+    TicketRepository.java – Stores ticket bookings
+
 ## Installation & Setup
+
+Prerequisites
+
+    Java 17+
+    SQLite
+    Spring Boot
 
 1. **Clone the repository:**
 
